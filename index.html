@@ -25,11 +25,183 @@
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: var(--text-color);
             background-color: #f9f9f9;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* 自定义光标 */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s ease;
+        }
+        
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(231, 76, 60, 0.5);
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.6s ease, opacity 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .cursor-view {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+        
+        .cursor-text {
+            width: 4px;
+            height: 20px;
+            background-color: var(--primary-color);
+        }
+        
+        /* 页面转场效果 */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            z-index: 10000;
+            transform: translateY(100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .transition-overlay.active {
+            animation: pageTransition 1s ease forwards;
+        }
+        
+        @keyframes pageTransition {
+            0% {
+                transform: translateY(100%);
+            }
+            50% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+        
+        /* 登录模态框 */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-modal.active {
+            display: flex;
+        }
+        
+        .login-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .login-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .login-form {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            transition: var(--transition);
+            cursor: none;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: none;
+            transition: var(--transition);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .login-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .login-message {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            min-height: 20px;
         }
         
         a {
@@ -55,7 +227,7 @@
             color: white;
             border: none;
             border-radius: 4px;
-            cursor: pointer;
+            cursor: none;
             transition: var(--transition);
             font-weight: 600;
         }
@@ -63,6 +235,14 @@
         .btn:hover {
             background-color: #c0392b;
             transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #2980b9;
         }
         
         .section {
@@ -155,7 +335,7 @@
         
         .hamburger {
             display: none;
-            cursor: pointer;
+            cursor: none;
             font-size: 1.5rem;
         }
         
@@ -262,7 +442,7 @@
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 4px;
-            cursor: pointer;
+            cursor: none;
             transition: var(--transition);
         }
         
@@ -284,6 +464,8 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            cursor: none;
+            position: relative;
         }
         
         .portfolio-item:hover {
@@ -294,16 +476,25 @@
         .portfolio-img {
             height: 200px;
             overflow: hidden;
+            position: relative;
         }
         
-        .portfolio-img img {
+        .portfolio-img img, .portfolio-img video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: var(--transition);
+            filter: blur(5px);
+            opacity: 0.7;
         }
         
-        .portfolio-item:hover .portfolio-img img {
+        .portfolio-img img.loaded, .portfolio-img video.loaded {
+            filter: blur(0);
+            opacity: 1;
+        }
+        
+        .portfolio-item:hover .portfolio-img img,
+        .portfolio-item:hover .portfolio-img video {
             transform: scale(1.1);
         }
         
@@ -320,6 +511,37 @@
         .portfolio-info p {
             color: #666;
             font-size: 0.9rem;
+        }
+        
+        .portfolio-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .portfolio-item:hover .portfolio-actions {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: none;
+            transition: var(--transition);
+        }
+        
+        .action-btn:hover {
+            background-color: white;
+            transform: scale(1.1);
         }
         
         /* 服务 */
@@ -340,6 +562,7 @@
             text-align: center;
             transition: var(--transition);
             box-shadow: var(--shadow);
+            cursor: none;
         }
         
         .service-card:hover {
@@ -367,6 +590,168 @@
         
         .service-card p {
             color: #666;
+        }
+        
+        /* 文件上传 */
+        .upload-section {
+            background-color: white;
+            padding: 60px 0;
+            display: none; /* 默认隐藏上传页面 */
+        }
+        
+        .upload-section.active {
+            display: block;
+        }
+        
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px 20px;
+            margin: 30px 0;
+            transition: var(--transition);
+            cursor: none;
+            text-align: center;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background-color: #f9f9f9;
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 4px;
+            cursor: none;
+            transition: var(--transition);
+            margin: 0 5px;
+        }
+        
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .uploaded-files {
+            margin-top: 30px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+        
+        .file-item:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .file-icon {
+            margin-right: 15px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .file-meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: none;
+            color: #666;
+        }
+        
+        .close-modal:hover {
+            color: var(--secondary-color);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: none;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
         }
         
         /* 联系 */
@@ -404,29 +789,6 @@
             font-size: 1.2rem;
             margin-bottom: 5px;
             color: var(--primary-color);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            transition: var(--transition);
-        }
-        
-        .form-control:focus {
-            border-color: var(--accent-color);
-            outline: none;
-        }
-        
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
         }
         
         /* 页脚 */
@@ -495,6 +857,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             transition: var(--transition);
+            cursor: none;
         }
         
         .social-link:hover {
@@ -565,6 +928,26 @@
             .footer-col {
                 flex: 0 0 100%;
             }
+            
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .file-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            /* 移动端恢复默认光标 */
+            body {
+                cursor: auto;
+            }
+            
+            .cursor, .cursor-follower {
+                display: none;
+            }
         }
         
         @media (max-width: 576px) {
@@ -587,17 +970,78 @@
     </style>
 </head>
 <body>
+    <!-- 自定义光标 -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <!-- 页面转场效果 -->
+    <div class="transition-overlay"></div>
+
+    <!-- 登录模态框 -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <h2 class="login-title">管理员登录</h2>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">用户名</label>
+                    <input type="text" class="form-control" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">登录</button>
+                <div class="login-message" id="loginMessage"></div>
+            </form>
+            <p>授权用户</p>
+        </div>
+    </div>
+
+    <!-- 编辑模态框 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑作品信息</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label class="form-label" for="editTitle">作品标题</label>
+                    <input type="text" class="form-control" id="editTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editDescription">作品描述</label>
+                    <textarea class="form-control" id="editDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editCategory">作品分类</label>
+                    <select class="form-select" id="editCategory" required>
+                        <option value="typography">字体设计</option>
+                        <option value="logo">标志设计</option>
+                        <option value="book">书籍设计</option>
+                        <option value="branding">品牌设计</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">保存更改</button>
+                    <button type="button" class="btn btn-secondary" id="addToPortfolioBtn">添加到作品集</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- 导航栏 -->
     <header>
         <div class="container">
             <nav class="navbar">
-                <a href="#" class="logo">视觉<span>设计</span></a>
+                <a href="#" class="logo">木易<span>设计</span></a>
                 <ul class="nav-links">
-                    <li><a href="#home">首页</a></li>
-                    <li><a href="#about">关于我</a></li>
-                    <li><a href="#portfolio">作品集</a></li>
-                    <li><a href="#services">服务</a></li>
-                    <li><a href="#contact">联系</a></li>
+                    <li><a href="#home" data-page="home">首页</a></li>
+                    <li><a href="#about" data-page="about">关于我</a></li>
+                    <li><a href="#portfolio" data-page="portfolio">作品集</a></li>
+                    <li><a href="#services" data-page="services">服务</a></li>
+                    <li><a href="#" id="uploadLink">上传作品</a></li>
+                    <li><a href="#contact" data-page="contact">联系</a></li>
                 </ul>
                 <div class="hamburger">
                     <i class="fas fa-bars"></i>
@@ -612,7 +1056,7 @@
             <div class="hero-content">
                 <h1>木易视觉设计工作室</h1>
                 <p>专注于字体设计、书籍设计、标志设计及品牌视觉系统构建</p>
-                <a href="#portfolio" class="btn">查看作品</a>
+                <a href="#portfolio" class="btn" data-page="portfolio">查看作品</a>
             </div>
         </div>
     </section>
@@ -626,7 +1070,7 @@
             </div>
             <div class="about-content">
                 <div class="about-img">
-                    <img src="/f5506859c9b166a4465f945a4b8ddef4.jpg" alt="设计师照片">
+                    <img src="/f5506859c9b166a4465f945a4b8ddef4.jpg" alt="设计师照片" loading="lazy">
                 </div>
                 <div class="about-text">
                     <h3>专业视觉传达设计师</h3>
@@ -660,72 +1104,8 @@
                 <button class="filter-btn" data-filter="book">书籍设计</button>
                 <button class="filter-btn" data-filter="branding">品牌设计</button>
             </div>
-            <div class="portfolio-grid">
-                <!-- 字体设计作品 -->
-                <div class="portfolio-item" data-category="typography">
-                    <div class="portfolio-img">
-                        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="字体设计作品">
-                    </div>
-                    <div class="portfolio-info">
-                        <h3>现代衬线字体设计</h3>
-                        <p>为高端时尚品牌设计的定制衬线字体</p>
-                    </div>
-                </div>
-                
-                <!-- 标志设计作品 -->
-                <div class="portfolio-item" data-category="logo">
-                    <div class="portfolio-img">
-                        <img src="https://images.unsplash.com/photo-1634942537034-2531766767d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1228&q=80" alt="标志设计作品">
-                    </div>
-                    <div class="portfolio-info">
-                        <h3>科技公司标志设计</h3>
-                        <p>为创新科技公司设计的极简风格标志</p>
-                    </div>
-                </div>
-                
-                <!-- 书籍设计作品 -->
-                <div class="portfolio-item" data-category="book">
-                    <div class="portfolio-img">
-                        <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1176&q=80" alt="书籍设计作品">
-                    </div>
-                    <div class="portfolio-info">
-                        <h3>文学书籍封面设计</h3>
-                        <p>为经典文学作品设计的系列封面</p>
-                    </div>
-                </div>
-                
-                <!-- 品牌设计作品 -->
-                <div class="portfolio-item" data-category="branding">
-                    <div class="portfolio-img">
-                        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="品牌设计作品">
-                    </div>
-                    <div class="portfolio-info">
-                        <h3>咖啡品牌视觉系统</h3>
-                        <p>为精品咖啡品牌设计的完整视觉识别系统</p>
-                    </div>
-                </div>
-                
-                <!-- 字体设计作品2 -->
-                <div class="portfolio-item" data-category="typography">
-                    <div class="portfolio-img">
-                        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1104&q=80" alt="字体设计作品2">
-                    </div>
-                    <div class="portfolio-info">
-                        <h3>手写字体设计</h3>
-                        <p>为儿童品牌设计的友好手写风格字体</p>
-                    </div>
-                </div>
-                
-                <!-- 标志设计作品2 -->
-                <div class="portfolio-item" data-category="logo">
-                    <div class="portfolio-img">
-                        <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="标志设计作品2">
-                    </div>
-                    <div class="portfolio-info">
-                        <h3>餐饮品牌标志设计</h3>
-                        <p>为有机餐厅设计的自然风格标志</p>
-                    </div>
-                </div>
+            <div class="portfolio-grid" id="portfolioGrid">
+                <!-- 作品将通过JavaScript动态添加 -->
             </div>
         </div>
     </section>
@@ -779,6 +1159,30 @@
                     </div>
                     <h3>UI/UX设计</h3>
                     <p>用户界面与用户体验设计，创造直观、美观且易于使用的数字产品。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 上传作品 -->
+    <section class="upload-section" id="upload">
+        <div class="container">
+            <div class="section-title">
+                <h2>上传作品</h2>
+                <p>分享您的设计作品或项目需求</p>
+            </div>
+            <div class="upload-container">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖放文件到这里上传</h3>
+                    <p>支持 JPG, PNG, GIF, MP4, MOV 格式，最大 50MB</p>
+                    <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display: none;">
+                    <div class="upload-btn" id="uploadTrigger">选择文件</div>
+                    <div class="upload-btn btn-secondary" id="addSampleBtn">添加示例作品</div>
+                </div>
+                <div class="uploaded-files" id="uploadedFiles">
+                    <h3>已上传文件</h3>
+                    <div id="fileList"></div>
                 </div>
             </div>
         </div>
@@ -856,7 +1260,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-col">
-                    <h3>视觉设计</h3>
+                    <h3>木易设计</h3>
                     <p>专业视觉传达设计师，专注于字体设计、书籍设计、标志设计及品牌视觉系统构建。</p>
                     <div class="social-links">
                         <a href="#" class="social-link"><i class="fab fa-weibo"></i></a>
@@ -868,11 +1272,11 @@
                 <div class="footer-col">
                     <h3>快速链接</h3>
                     <ul class="footer-links">
-                        <li><a href="#home">首页</a></li>
-                        <li><a href="#about">关于我</a></li>
-                        <li><a href="#portfolio">作品集</a></li>
-                        <li><a href="#services">服务</a></li>
-                        <li><a href="#contact">联系</a></li>
+                        <li><a href="#home" data-page="home">首页</a></li>
+                        <li><a href="#about" data-page="about">关于我</a></li>
+                        <li><a href="#portfolio" data-page="portfolio">作品集</a></li>
+                        <li><a href="#services" data-page="services">服务</a></li>
+                        <li><a href="#" id="footerUploadLink">上传作品</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -903,6 +1307,96 @@
     </footer>
 
     <script>
+        // 登录状态管理
+        let isLoggedIn = false;
+        
+        // 自定义光标
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+        
+        // 光标变化效果
+        document.querySelectorAll('a, button, .portfolio-item, .service-card, .upload-area, .form-control').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(0.5)';
+                if (element.classList.contains('portfolio-item')) {
+                    cursorFollower.classList.add('cursor-view');
+                    cursorFollower.innerHTML = 'VIEW';
+                } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    cursorFollower.classList.add('cursor-text');
+                }
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.classList.remove('cursor-view');
+                cursorFollower.classList.remove('cursor-text');
+                cursorFollower.innerHTML = '';
+            });
+        });
+        
+        // 页面转场效果
+        const transitionOverlay = document.querySelector('.transition-overlay');
+        
+        document.querySelectorAll('a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href').startsWith('#')) {
+                    // 内部链接，使用平滑滚动
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 移动端菜单关闭
+                        if (navLinks.classList.contains('active')) {
+                            navLinks.classList.remove('active');
+                        }
+                    }
+                } else {
+                    // 外部链接，使用转场效果
+                    e.preventDefault();
+                    const pageName = link.getAttribute('data-page');
+                    transitionOverlay.textContent = `加载 ${pageName} 页面...`;
+                    transitionOverlay.classList.add('active');
+                    
+                    setTimeout(() => {
+                        window.location.href = link.getAttribute('href');
+                    }, 1000);
+                }
+            });
+        });
+        
+        // 图片懒加载
+        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        lazyImages.forEach(img => {
+            imageObserver.observe(img);
+        });
+        
         // 移动端菜单切换
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
@@ -913,7 +1407,7 @@
         
         // 作品集筛选功能
         const filterBtns = document.querySelectorAll('.filter-btn');
-        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        const portfolioGrid = document.getElementById('portfolioGrid');
         
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -923,6 +1417,7 @@
                 btn.classList.add('active');
                 
                 const filter = btn.getAttribute('data-filter');
+                const portfolioItems = portfolioGrid.querySelectorAll('.portfolio-item');
                 
                 portfolioItems.forEach(item => {
                     if (filter === 'all' || item.getAttribute('data-category') === filter) {
@@ -934,28 +1429,325 @@
             });
         });
         
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 70,
-                        behavior: 'smooth'
-                    });
-                    
-                    // 移动端菜单关闭
-                    if (navLinks.classList.contains('active')) {
-                        navLinks.classList.remove('active');
-                    }
+        // 文件上传功能
+        const uploadSection = document.getElementById('upload');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadTrigger = document.getElementById('uploadTrigger');
+        const addSampleBtn = document.getElementById('addSampleBtn');
+        const fileList = document.getElementById('fileList');
+        const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+        const addToPortfolioBtn = document.getElementById('addToPortfolioBtn');
+        const closeModal = document.querySelector('.close-modal');
+        const uploadLink = document.getElementById('uploadLink');
+        const footerUploadLink = document.getElementById('footerUploadLink');
+        const loginModal = document.getElementById('loginModal');
+        const loginForm = document.getElementById('loginForm');
+        const loginMessage = document.getElementById('loginMessage');
+        
+        let currentEditingFile = null;
+        
+        // 上传链接点击事件
+        uploadLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isLoggedIn) {
+                showUploadSection();
+            } else {
+                showLoginModal();
+            }
+        });
+        
+        footerUploadLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isLoggedIn) {
+                showUploadSection();
+            } else {
+                showLoginModal();
+            }
+        });
+        
+        function showUploadSection() {
+            uploadSection.classList.add('active');
+            window.scrollTo({
+                top: uploadSection.offsetTop - 70,
+                behavior: 'smooth'
+            });
+        }
+        
+        function showLoginModal() {
+            loginModal.classList.add('active');
+        }
+        
+        // 登录表单提交
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'admin') {
+                isLoggedIn = true;
+                loginModal.classList.remove('active');
+                showUploadSection();
+            } else {
+                loginMessage.textContent = '用户名或密码错误！';
+            }
+        });
+        
+        uploadTrigger.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // 添加示例作品
+        addSampleBtn.addEventListener('click', () => {
+            const sampleFiles = [
+                {
+                    name: '示例字体设计.jpg',
+                    size: '2.5 MB',
+                    type: 'image',
+                    url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80'
+                },
+                {
+                    name: '示例标志设计.png',
+                    size: '1.8 MB',
+                    type: 'image',
+                    url: 'https://images.unsplash.com/photo-1634942537034-2531766767d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1228&q=80'
+                },
+                {
+                    name: '设计过程演示.mp4',
+                    size: '15.2 MB',
+                    type: 'video',
+                    url: 'https://assets.mixkit.co/videos/preview/mixkit-close-up-shot-of-a-designer-working-on-his-computer-44675-large.mp4'
                 }
+            ];
+            
+            sampleFiles.forEach(file => {
+                createFileItem(file);
             });
         });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--accent-color)';
+            uploadArea.style.backgroundColor = '#f0f8ff';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.backgroundColor = '';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.backgroundColor = '';
+            
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+        
+        fileInput.addEventListener('change', () => {
+            const files = fileInput.files;
+            handleFiles(files);
+        });
+        
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.size > 50 * 1024 * 1024) {
+                    alert('文件大小不能超过50MB');
+                    continue;
+                }
+                
+                const fileObj = {
+                    name: file.name,
+                    size: formatFileSize(file.size),
+                    type: file.type.startsWith('image/') ? 'image' : 'video',
+                    file: file
+                };
+                
+                createFileItem(fileObj);
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function createFileItem(fileObj) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.setAttribute('data-file', JSON.stringify(fileObj));
+            
+            const fileIcon = document.createElement('i');
+            fileIcon.className = `file-icon fas ${fileObj.type === 'image' ? 'fa-file-image' : 'fa-file-video'}`;
+            
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+            
+            const fileName = document.createElement('div');
+            fileName.className = 'file-name';
+            fileName.textContent = fileObj.name;
+            
+            const fileMeta = document.createElement('div');
+            fileMeta.className = 'file-meta';
+            fileMeta.textContent = `${fileObj.size} • ${fileObj.type === 'image' ? '图片' : '视频'}`;
+            
+            fileInfo.appendChild(fileName);
+            fileInfo.appendChild(fileMeta);
+            
+            const fileActions = document.createElement('div');
+            fileActions.className = 'file-actions';
+            
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn';
+            editBtn.textContent = '编辑';
+            editBtn.addEventListener('click', () => openEditModal(fileItem, fileObj));
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-secondary';
+            deleteBtn.textContent = '删除';
+            deleteBtn.addEventListener('click', () => {
+                fileItem.remove();
+            });
+            
+            fileActions.appendChild(editBtn);
+            fileActions.appendChild(deleteBtn);
+            
+            fileItem.appendChild(fileIcon);
+            fileItem.appendChild(fileInfo);
+            fileItem.appendChild(fileActions);
+            fileList.appendChild(fileItem);
+        }
+        
+        function openEditModal(fileItem, fileObj) {
+            currentEditingFile = { fileItem, fileObj };
+            document.getElementById('editTitle').value = fileObj.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('editDescription').value = `这是一个${fileObj.type === 'image' ? '图片' : '视频'}作品`;
+            document.getElementById('editCategory').value = 'typography';
+            editModal.classList.add('active');
+        }
+        
+        closeModal.addEventListener('click', () => {
+            editModal.classList.remove('active');
+        });
+        
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (currentEditingFile) {
+                const title = document.getElementById('editTitle').value;
+                const description = document.getElementById('editDescription').value;
+                const category = document.getElementById('editCategory').value;
+                
+                // 更新文件信息
+                const fileInfo = currentEditingFile.fileItem.querySelector('.file-info');
+                fileInfo.querySelector('.file-name').textContent = title;
+                
+                alert('作品信息已更新！');
+                editModal.classList.remove('active');
+            }
+        });
+        
+        addToPortfolioBtn.addEventListener('click', () => {
+            if (currentEditingFile) {
+                const title = document.getElementById('editTitle').value;
+                const description = document.getElementById('editDescription').value;
+                const category = document.getElementById('editCategory').value;
+                const fileObj = currentEditingFile.fileObj;
+                
+                // 创建作品集项目
+                const portfolioItem = document.createElement('div');
+                portfolioItem.className = 'portfolio-item';
+                portfolioItem.setAttribute('data-category', category);
+                
+                const portfolioImg = document.createElement('div');
+                portfolioImg.className = 'portfolio-img';
+                
+                let mediaElement;
+                if (fileObj.type === 'image') {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = fileObj.url || URL.createObjectURL(fileObj.file);
+                    mediaElement.alt = title;
+                } else {
+                    mediaElement = document.createElement('video');
+                    mediaElement.src = fileObj.url || URL.createObjectURL(fileObj.file);
+                    mediaElement.controls = true;
+                }
+                mediaElement.loading = 'lazy';
+                mediaElement.classList.add('loaded');
+                
+                portfolioImg.appendChild(mediaElement);
+                
+                const portfolioInfo = document.createElement('div');
+                portfolioInfo.className = 'portfolio-info';
+                
+                const portfolioTitle = document.createElement('h3');
+                portfolioTitle.textContent = title;
+                
+                const portfolioDesc = document.createElement('p');
+                portfolioDesc.textContent = description;
+                
+                portfolioInfo.appendChild(portfolioTitle);
+                portfolioInfo.appendChild(portfolioDesc);
+                
+                const portfolioActions = document.createElement('div');
+                portfolioActions.className = 'portfolio-actions';
+                
+                const editAction = document.createElement('div');
+                editAction.className = 'action-btn';
+                editAction.innerHTML = '<i class="fas fa-edit"></i>';
+                
+                const deleteAction = document.createElement('div');
+                deleteAction.className = 'action-btn';
+                deleteAction.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteAction.addEventListener('click', () => {
+                    portfolioItem.remove();
+                });
+                
+                portfolioActions.appendChild(editAction);
+                portfolioActions.appendChild(deleteAction);
+                
+                portfolioItem.appendChild(portfolioImg);
+                portfolioItem.appendChild(portfolioInfo);
+                portfolioItem.appendChild(portfolioActions);
+                
+                portfolioGrid.appendChild(portfolioItem);
+                
+                alert('作品已添加到作品集！');
+                editModal.classList.remove('active');
+                
+                // 重新绑定筛选功能
+                bindFilterFunctionality();
+            }
+        });
+        
+        function bindFilterFunctionality() {
+            const portfolioItems = portfolioGrid.querySelectorAll('.portfolio-item');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 移除所有按钮的active类
+                    filterBtns.forEach(btn => btn.classList.remove('active'));
+                    // 为当前点击的按钮添加active类
+                    btn.classList.add('active');
+                    
+                    const filter = btn.getAttribute('data-filter');
+                    
+                    portfolioItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
         
         // 导航栏滚动效果
         window.addEventListener('scroll', () => {
@@ -967,6 +1759,11 @@
                 header.style.backgroundColor = 'white';
                 header.style.backdropFilter = 'none';
             }
+        });
+        
+        // 初始化示例作品
+        window.addEventListener('DOMContentLoaded', () => {
+            addSampleBtn.click();
         });
     </script>
 </body>
